@@ -31,6 +31,9 @@ def home():
 
 @app.post("/predict")
 def predict(data: SalaryRequest):
+    # Normalize job_title to title case for case insensitivity
+    data.job_title = data.job_title.title()
+    
     # 1. Prepare input for the model
     input_df = pd.DataFrame([data.model_dump()])
     
@@ -44,11 +47,15 @@ def predict(data: SalaryRequest):
     # 3. Generate Narrative Insights via Ollama
     story_to_save = "Story generation failed."
     try:
-        insight_prompt = f"""You are a senior career advisor. 
-        Write a 2-paragraph analysis for a {data.job_title} earning ${prediction:,.2f}.
-        Paragraph 1: A brief career narrative about this role.
-        Paragraph 2: A specific market insight on how being at a '{data.company_size}' company affects the ${prediction:,.2f} salary for a '{data.experience_level}' level professional.
-        Keep it professional."""
+        insight_prompt = f"""You are a seasoned career storyteller and advisor in the tech industry. Craft an engaging 2-paragraph career story for a {data.job_title} at the {data.experience_level} level earning ${prediction:,.2f}.
+
+                Paragraph 1: Weave a compelling narrative (4-5 sentences) about the journey of a {data.job_title}, highlighting key milestones, daily challenges, and the satisfaction of mastering this role.
+
+                Paragraph 2: Share insightful market wisdom (4-5 sentences) on how the {data.company_size} company environment shapes the compensation landscape for this professional, touching on growth opportunities, work-life balance, and industry positioning that justifies the ${prediction:,.2f} salary.
+
+                Make it inspiring, relatable, and forward-looking while maintaining professionalism.
+
+                Finally, provide a bullet point summary of the key takeaways from this career story."""
 
         story_response = requests.post(
             "http://localhost:11434/api/generate",
@@ -67,7 +74,7 @@ def predict(data: SalaryRequest):
 
     except Exception as e:
         print(f"Ollama Error: {e}")
-        story_to_save = f"Career outlook for {data.job_title} remains strong at ${prediction:,.2f}."
+        story_to_save = f"The story teller is asleep but i can tell you that the career outlook for {data.job_title} remains strong at ${prediction:,.2f}. Try generating again for a presonalized story."
 
     # 4. Save to Supabase
     try:

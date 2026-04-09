@@ -1,4 +1,3 @@
-
 import pandas as pd
 import joblib
 from sklearn.model_selection import train_test_split
@@ -10,6 +9,9 @@ def train_salary_model(csv_path: str) -> None:
     try:
         # 1. Load the dataset
         df = pd.read_csv(csv_path)
+        
+        # Normalize job_title to title case for consistency
+        df['job_title'] = df['job_title'].str.title()
         
         # 2. Select the Features for the bootcamp project
         features = ['experience_level', 'employment_type', 'job_title', 'company_size']
