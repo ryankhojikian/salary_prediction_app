@@ -54,7 +54,7 @@ ollama run hf.co/unsloth/Llama-3.2-1B-Instruct-GGUF
 
 ### Terminal 2: Start FastAPI Backend
 ```bash
-uv run uvicorn app:app --reload --host 0.0.0.0 --port 8000
+uv run uvicorn app:app --reload --host 0.0.0.0 --port 8001
 ```
 
 ### Terminal 3: Start Streamlit Frontend
